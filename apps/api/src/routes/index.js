@@ -1,4 +1,5 @@
 import { Router } from "express";
+import projectRoutes from "./projectRoutes.js";
 import taskRoutes from "./taskRoutes.js";
 const router = Router();
 router.get("/health", (_req, res) => {
@@ -8,5 +9,6 @@ router.get("/health", (_req, res) => {
     });
 });
 router.use("/tasks", taskRoutes);
+router.use("/projects", projectRoutes);
 export default router;
 //# sourceMappingURL=index.js.map
