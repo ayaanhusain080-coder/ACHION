@@ -1,4 +1,5 @@
 import { Router } from "express";
+import goalRoutes from "./goalRoutes.js";
 import projectRoutes from "./projectRoutes.js";
 import taskRoutes from "./taskRoutes.js";
 
@@ -13,5 +14,6 @@ router.get("/health", (_req, res) => {
 
 router.use("/tasks", taskRoutes);
 router.use("/projects", projectRoutes);
+router.use("/goals", goalRoutes);
 
 export default router;
