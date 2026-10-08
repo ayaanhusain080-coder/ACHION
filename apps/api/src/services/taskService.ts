@@ -25,3 +25,59 @@ export const createTask = (
 };
 
 export const getTasks = (): Task[] => tasks;
+
+export const getTaskById = (id: string): Task | undefined => {
+  return tasks.find((task) => task.id === id);
+};
+
+export const updateTask = (
+  id: string,
+  updates: Partial<
+    Pick<
+      Task,
+      "title" | "description" | "status" | "priority" | "dueDate"
+    >
+  >,
+): Task | undefined => {
+  const task = tasks.find((item) => item.id === id);
+
+  if (!task) {
+    return undefined;
+  }
+
+  if (updates.title !== undefined) {
+    task.title = updates.title.trim();
+  }
+
+  if (updates.description !== undefined) {
+    task.description = updates.description.trim();
+  }
+
+  if (updates.status !== undefined) {
+    task.status = updates.status;
+  }
+
+  if (updates.priority !== undefined) {
+    task.priority = updates.priority;
+  }
+
+  if (updates.dueDate !== undefined) {
+    task.dueDate = updates.dueDate;
+  }
+
+  task.updatedAt = new Date().toISOString();
+
+  return task;
+};
+
+export const deleteTask = (id: string): boolean => {
+  const index = tasks.findIndex((task) => task.id === id);
+
+  if (index === -1) {
+    return false;
+  }
+
+  tasks.splice(index, 1);
+
+  return true;
+};

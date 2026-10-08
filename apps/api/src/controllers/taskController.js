@@ -1,5 +1,12 @@
-import { createTask, getTasks, } from "../services/taskService.js";
-import { validateCreateTask } from "../validators/taskValidator.js";
+import { createTask, deleteTask, getTaskById, getTasks, updateTask, } from "../services/taskService.js";
+import { validateCreateTask, validateUpdateTask, } from "../validators/taskValidator.js";
+const getTaskId = (req) => {
+    const { id } = req.params;
+    if (typeof id !== "string" || id.trim().length === 0) {
+        return null;
+    }
+    return id;
+};
 export const createTaskController = (req, res) => {
     const validationError = validateCreateTask(req);
     if (validationError) {
@@ -19,6 +26,80 @@ export const getTasksController = (_req, res) => {
     res.json({
         success: true,
         data: getTasks(),
+    });
+};
+export const getTaskByIdController = (req, res) => {
+    const id = getTaskId(req);
+    if (!id) {
+        res.status(400).json({
+            success: false,
+            message: "Task ID is required",
+        });
+        return;
+    }
+    const task = getTaskById(id);
+    if (!task) {
+        res.status(404).json({
+            success: false,
+            message: "Task not found",
+        });
+        return;
+    }
+    res.json({
+        success: true,
+        data: task,
+    });
+};
+export const updateTaskController = (req, res) => {
+    const validationError = validateUpdateTask(req);
+    if (validationError) {
+        res.status(400).json({
+            success: false,
+            message: validationError,
+        });
+        return;
+    }
+    const id = getTaskId(req);
+    if (!id) {
+        res.status(400).json({
+            success: false,
+            message: "Task ID is required",
+        });
+        return;
+    }
+    const task = updateTask(id, req.body);
+    if (!task) {
+        res.status(404).json({
+            success: false,
+            message: "Task not found",
+        });
+        return;
+    }
+    res.json({
+        success: true,
+        data: task,
+    });
+};
+export const deleteTaskController = (req, res) => {
+    const id = getTaskId(req);
+    if (!id) {
+        res.status(400).json({
+            success: false,
+            message: "Task ID is required",
+        });
+        return;
+    }
+    const deleted = deleteTask(id);
+    if (!deleted) {
+        res.status(404).json({
+            success: false,
+            message: "Task not found",
+        });
+        return;
+    }
+    res.json({
+        success: true,
+        message: "Task deleted successfully",
     });
 };
 //# sourceMappingURL=taskController.js.map
