@@ -1,10 +1,8 @@
 import dotenv from "dotenv";
 import app from "./app.js";
-
 dotenv.config();
-
 const PORT = Number(process.env.PORT) || 5000;
-
 app.listen(PORT, () => {
-  console.log(`🚀 ACHION API running on http://localhost:${PORT}`);
+    console.log(`🚀 ACHION API running on http://localhost:${PORT}`);
 });
+//# sourceMappingURL=index.js.map
