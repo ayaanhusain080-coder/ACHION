@@ -4,6 +4,7 @@ import type { Goal, GoalLevel } from "../types/goal.js";
 const goals: Goal[] = [];
 
 export const createGoal = (
+  userId: string,
   title: string,
   description?: string,
   level: GoalLevel = "GOAL",
@@ -13,6 +14,7 @@ export const createGoal = (
 
   const goal: Goal = {
     id: randomUUID(),
+    userId,
     title: title.trim(),
     ...(description
       ? { description: description.trim() }
@@ -30,17 +32,27 @@ export const createGoal = (
   return goal;
 };
 
-export const getGoals = (): Goal[] => {
-  return goals;
+export const getGoals = (
+  userId: string,
+): Goal[] => {
+  return goals.filter(
+    (goal) => goal.userId === userId,
+  );
 };
 
 export const getGoalById = (
+  userId: string,
   id: string,
 ): Goal | undefined => {
-  return goals.find((goal) => goal.id === id);
+  return goals.find(
+    (goal) =>
+      goal.id === id &&
+      goal.userId === userId,
+  );
 };
 
 export const updateGoal = (
+  userId: string,
   id: string,
   updates: Partial<
     Pick<
@@ -55,7 +67,9 @@ export const updateGoal = (
   >,
 ): Goal | undefined => {
   const goal = goals.find(
-    (item) => item.id === id,
+    (item) =>
+      item.id === id &&
+      item.userId === userId,
   );
 
   if (!goal) {
@@ -67,7 +81,8 @@ export const updateGoal = (
   }
 
   if (updates.description !== undefined) {
-    goal.description = updates.description.trim();
+    goal.description =
+      updates.description.trim();
   }
 
   if (updates.level !== undefined) {
@@ -86,16 +101,20 @@ export const updateGoal = (
     goal.progress = updates.progress;
   }
 
-  goal.updatedAt = new Date().toISOString();
+  goal.updatedAt =
+    new Date().toISOString();
 
   return goal;
 };
 
 export const deleteGoal = (
+  userId: string,
   id: string,
 ): boolean => {
   const index = goals.findIndex(
-    (goal) => goal.id === id,
+    (goal) =>
+      goal.id === id &&
+      goal.userId === userId,
   );
 
   if (index === -1) {

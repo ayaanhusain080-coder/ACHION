@@ -6,8 +6,11 @@ import {
   getGoalsController,
   updateGoalController,
 } from "../controllers/goalController.js";
+import { requireAuth } from "../middleware/authMiddleware.js";
 
 const router = Router();
+
+router.use(requireAuth);
 
 router.get("/", getGoalsController);
 router.post("/", createGoalController);

@@ -10,6 +10,7 @@ export type GoalLevel =
 
 export interface Goal {
   id: string;
+  userId: string;
   title: string;
   description?: string;
   level: GoalLevel;

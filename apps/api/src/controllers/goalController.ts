@@ -10,6 +10,7 @@ import {
   validateCreateGoal,
   validateUpdateGoal,
 } from "../validators/goalValidator.js";
+import type { PublicUser } from "../types/auth.js";
 
 const getGoalId = (
   req: Request,
@@ -24,6 +25,20 @@ const getGoalId = (
   }
 
   return id;
+};
+
+const getAuthenticatedUser = (
+  res: Response,
+): PublicUser | null => {
+  const user = res.locals.user as
+    | PublicUser
+    | undefined;
+
+  if (!user) {
+    return null;
+  }
+
+  return user;
 };
 
 export const createGoalController = (
@@ -41,7 +56,19 @@ export const createGoalController = (
     return;
   }
 
+  const user =
+    getAuthenticatedUser(res);
+
+  if (!user) {
+    res.status(401).json({
+      success: false,
+      message: "Authentication required",
+    });
+    return;
+  }
+
   const goal = createGoal(
+    user.id,
     req.body.title,
     req.body.description,
     req.body.level,
@@ -58,9 +85,20 @@ export const getGoalsController = (
   _req: Request,
   res: Response,
 ) => {
+  const user =
+    getAuthenticatedUser(res);
+
+  if (!user) {
+    res.status(401).json({
+      success: false,
+      message: "Authentication required",
+    });
+    return;
+  }
+
   res.json({
     success: true,
-    data: getGoals(),
+    data: getGoals(user.id),
   });
 };
 
@@ -78,7 +116,21 @@ export const getGoalByIdController = (
     return;
   }
 
-  const goal = getGoalById(id);
+  const user =
+    getAuthenticatedUser(res);
+
+  if (!user) {
+    res.status(401).json({
+      success: false,
+      message: "Authentication required",
+    });
+    return;
+  }
+
+  const goal = getGoalById(
+    user.id,
+    id,
+  );
 
   if (!goal) {
     res.status(404).json({
@@ -119,7 +171,19 @@ export const updateGoalController = (
     return;
   }
 
+  const user =
+    getAuthenticatedUser(res);
+
+  if (!user) {
+    res.status(401).json({
+      success: false,
+      message: "Authentication required",
+    });
+    return;
+  }
+
   const goal = updateGoal(
+    user.id,
     id,
     req.body,
   );
@@ -152,7 +216,21 @@ export const deleteGoalController = (
     return;
   }
 
-  const deleted = deleteGoal(id);
+  const user =
+    getAuthenticatedUser(res);
+
+  if (!user) {
+    res.status(401).json({
+      success: false,
+      message: "Authentication required",
+    });
+    return;
+  }
+
+  const deleted = deleteGoal(
+    user.id,
+    id,
+  );
 
   if (!deleted) {
     res.status(404).json({
