@@ -1,5 +1,6 @@
 import { Router } from "express";
 import authRoutes from "./authRoutes.js";
+import calendarRoutes from "./calendarRoutes.js";
 import goalRoutes from "./goalRoutes.js";
 import projectRoutes from "./projectRoutes.js";
 import taskRoutes from "./taskRoutes.js";
@@ -16,12 +17,20 @@ router.get("/health", (_req, res) => {
 
 router.use("/auth", authRoutes);
 
+router.use(
+  "/calendar",
+  requireAuth,
+  calendarRoutes,
+);
+
 router.use("/tasks", requireAuth, taskRoutes);
+
 router.use(
   "/projects",
   requireAuth,
   projectRoutes,
 );
+
 router.use("/goals", requireAuth, goalRoutes);
 
 export default router;
