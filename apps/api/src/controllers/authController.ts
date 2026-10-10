@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import {
   loginUser,
+  logoutUser,
   registerUser,
 } from "../services/authService.js";
 import {
@@ -8,6 +9,25 @@ import {
   validateRegister,
 } from "../validators/authValidator.js";
 import { getCurrentUser } from "../utils/currentUser.js";
+
+const getBearerToken = (
+  req: Request,
+): string | null => {
+  const authorization =
+    req.headers.authorization;
+
+  if (
+    typeof authorization !== "string" ||
+    !authorization.startsWith("Bearer ")
+  ) {
+    return null;
+  }
+
+  const token =
+    authorization.slice("Bearer ".length).trim();
+
+  return token || null;
+};
 
 export const registerController = (
   req: Request,
@@ -96,5 +116,35 @@ export const meController = (
   res.json({
     success: true,
     data: user,
+  });
+};
+
+export const logoutController = (
+  req: Request,
+  res: Response,
+) => {
+  const token = getBearerToken(req);
+
+  if (!token) {
+    res.status(401).json({
+      success: false,
+      message: "Authentication required",
+    });
+    return;
+  }
+
+  const loggedOut = logoutUser(token);
+
+  if (!loggedOut) {
+    res.status(401).json({
+      success: false,
+      message: "Invalid or expired token",
+    });
+    return;
+  }
+
+  res.json({
+    success: true,
+    message: "Logged out successfully",
   });
 };

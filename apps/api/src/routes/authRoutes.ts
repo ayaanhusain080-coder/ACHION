@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   loginController,
+  logoutController,
   meController,
   registerController,
 } from "../controllers/authController.js";
@@ -22,6 +23,12 @@ router.get(
   "/me",
   requireAuth,
   meController,
+);
+
+router.post(
+  "/logout",
+  requireAuth,
+  logoutController,
 );
 
 export default router;

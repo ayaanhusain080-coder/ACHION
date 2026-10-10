@@ -194,3 +194,19 @@ export const getUserByToken = (
 
   return getUserById(session.userId);
 };
+
+export const logoutUser = (
+  token: string,
+): boolean => {
+  const index = sessions.findIndex(
+    (session) => session.token === token,
+  );
+
+  if (index === -1) {
+    return false;
+  }
+
+  sessions.splice(index, 1);
+
+  return true;
+};
