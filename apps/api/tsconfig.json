@@ -12,7 +12,7 @@
     "exactOptionalPropertyTypes": true,
     "strict": true,
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
@@ -21,3 +21,4 @@
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
+
