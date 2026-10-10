@@ -4,6 +4,7 @@ import type { Task } from "../types/task.js";
 const tasks: Task[] = [];
 
 export const createTask = (
+  userId: string,
   title: string,
   description?: string,
 ): Task => {
@@ -11,6 +12,7 @@ export const createTask = (
 
   const task: Task = {
     id: randomUUID(),
+    userId,
     title: title.trim(),
     ...(description ? { description: description.trim() } : {}),
     status: "INBOX",
@@ -24,22 +26,44 @@ export const createTask = (
   return task;
 };
 
-export const getTasks = (): Task[] => tasks;
+export const getTasks = (
+  userId: string,
+): Task[] => {
+  return tasks.filter(
+    (task) => task.userId === userId,
+  );
+};
 
-export const getTaskById = (id: string): Task | undefined => {
-  return tasks.find((task) => task.id === id);
+export const getTaskById = (
+  userId: string,
+  id: string,
+): Task | undefined => {
+  return tasks.find(
+    (task) =>
+      task.id === id &&
+      task.userId === userId,
+  );
 };
 
 export const updateTask = (
+  userId: string,
   id: string,
   updates: Partial<
     Pick<
       Task,
-      "title" | "description" | "status" | "priority" | "dueDate"
+      "title" |
+        "description" |
+        "status" |
+        "priority" |
+        "dueDate"
     >
   >,
 ): Task | undefined => {
-  const task = tasks.find((item) => item.id === id);
+  const task = tasks.find(
+    (item) =>
+      item.id === id &&
+      item.userId === userId,
+  );
 
   if (!task) {
     return undefined;
@@ -50,7 +74,8 @@ export const updateTask = (
   }
 
   if (updates.description !== undefined) {
-    task.description = updates.description.trim();
+    task.description =
+      updates.description.trim();
   }
 
   if (updates.status !== undefined) {
@@ -65,13 +90,21 @@ export const updateTask = (
     task.dueDate = updates.dueDate;
   }
 
-  task.updatedAt = new Date().toISOString();
+  task.updatedAt =
+    new Date().toISOString();
 
   return task;
 };
 
-export const deleteTask = (id: string): boolean => {
-  const index = tasks.findIndex((task) => task.id === id);
+export const deleteTask = (
+  userId: string,
+  id: string,
+): boolean => {
+  const index = tasks.findIndex(
+    (task) =>
+      task.id === id &&
+      task.userId === userId,
+  );
 
   if (index === -1) {
     return false;

@@ -6,8 +6,11 @@ import {
   getTasksController,
   updateTaskController,
 } from "../controllers/taskController.js";
+import { requireAuth } from "../middleware/authMiddleware.js";
 
 const router = Router();
+
+router.use(requireAuth);
 
 router.get("/", getTasksController);
 router.post("/", createTaskController);
