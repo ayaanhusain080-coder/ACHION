@@ -7,6 +7,7 @@ import {
   validateLogin,
   validateRegister,
 } from "../validators/authValidator.js";
+import { getCurrentUser } from "../utils/currentUser.js";
 
 export const registerController = (
   req: Request,
@@ -75,5 +76,25 @@ export const loginController = (
   res.json({
     success: true,
     data: result,
+  });
+};
+
+export const meController = (
+  _req: Request,
+  res: Response,
+) => {
+  const user = getCurrentUser(res);
+
+  if (!user) {
+    res.status(401).json({
+      success: false,
+      message: "Authentication required",
+    });
+    return;
+  }
+
+  res.json({
+    success: true,
+    data: user,
   });
 };
