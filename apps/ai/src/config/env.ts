@@ -1,8 +1,11 @@
 import dotenv from "dotenv";
+import path from "node:path";
 
 dotenv.config({
-  path: "apps/ai/.env",
+  path: path.resolve(__dirname, "../../.env"),
+  override: true,
 });
+
 declare const process: {
   env: Record<string, string | undefined>;
 };
@@ -49,7 +52,7 @@ export function loadAIConfig(): AIConfig {
   return {
     apiBaseUrl: getRequiredEnv("ACHION_API_URL", "http://localhost:5000"),
 
-    aiProvider: getRequiredEnv("ACHION_AI_PROVIDER", "openai"),
+    aiProvider: getRequiredEnv("ACHION_AI_PROVIDER", "ollama"),
 
     aiModel: getEnv("ACHION_AI_MODEL"),
 
