@@ -7,6 +7,7 @@ export type ProjectStatus =
 
 export interface Project {
   id: string;
+  userId: string;
   name: string;
   description?: string;
   status: ProjectStatus;

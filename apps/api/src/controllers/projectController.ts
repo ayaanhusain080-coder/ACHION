@@ -10,6 +10,7 @@ import {
   validateCreateProject,
   validateUpdateProject,
 } from "../validators/projectValidator.js";
+import type { PublicUser } from "../types/auth.js";
 
 const getProjectId = (
   req: Request,
@@ -24,6 +25,20 @@ const getProjectId = (
   }
 
   return id;
+};
+
+const getAuthenticatedUser = (
+  res: Response,
+): PublicUser | null => {
+  const user = res.locals.user as
+    | PublicUser
+    | undefined;
+
+  if (!user) {
+    return null;
+  }
+
+  return user;
 };
 
 export const createProjectController = (
@@ -41,7 +56,19 @@ export const createProjectController = (
     return;
   }
 
+  const user =
+    getAuthenticatedUser(res);
+
+  if (!user) {
+    res.status(401).json({
+      success: false,
+      message: "Authentication required",
+    });
+    return;
+  }
+
   const project = createProject(
+    user.id,
     req.body.name,
     req.body.description,
     req.body.deadline,
@@ -57,9 +84,20 @@ export const getProjectsController = (
   _req: Request,
   res: Response,
 ) => {
+  const user =
+    getAuthenticatedUser(res);
+
+  if (!user) {
+    res.status(401).json({
+      success: false,
+      message: "Authentication required",
+    });
+    return;
+  }
+
   res.json({
     success: true,
-    data: getProjects(),
+    data: getProjects(user.id),
   });
 };
 
@@ -77,7 +115,21 @@ export const getProjectByIdController = (
     return;
   }
 
-  const project = getProjectById(id);
+  const user =
+    getAuthenticatedUser(res);
+
+  if (!user) {
+    res.status(401).json({
+      success: false,
+      message: "Authentication required",
+    });
+    return;
+  }
+
+  const project = getProjectById(
+    user.id,
+    id,
+  );
 
   if (!project) {
     res.status(404).json({
@@ -118,7 +170,19 @@ export const updateProjectController = (
     return;
   }
 
+  const user =
+    getAuthenticatedUser(res);
+
+  if (!user) {
+    res.status(401).json({
+      success: false,
+      message: "Authentication required",
+    });
+    return;
+  }
+
   const project = updateProject(
+    user.id,
     id,
     req.body,
   );
@@ -151,7 +215,21 @@ export const deleteProjectController = (
     return;
   }
 
-  const deleted = deleteProject(id);
+  const user =
+    getAuthenticatedUser(res);
+
+  if (!user) {
+    res.status(401).json({
+      success: false,
+      message: "Authentication required",
+    });
+    return;
+  }
+
+  const deleted = deleteProject(
+    user.id,
+    id,
+  );
 
   if (!deleted) {
     res.status(404).json({

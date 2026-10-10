@@ -4,6 +4,7 @@ import type { Project } from "../types/project.js";
 const projects: Project[] = [];
 
 export const createProject = (
+  userId: string,
   name: string,
   description?: string,
   deadline?: string,
@@ -12,6 +13,7 @@ export const createProject = (
 
   const project: Project = {
     id: randomUUID(),
+    userId,
     name: name.trim(),
     ...(description
       ? { description: description.trim() }
@@ -28,19 +30,27 @@ export const createProject = (
   return project;
 };
 
-export const getProjects = (): Project[] => {
-  return projects;
+export const getProjects = (
+  userId: string,
+): Project[] => {
+  return projects.filter(
+    (project) => project.userId === userId,
+  );
 };
 
 export const getProjectById = (
+  userId: string,
   id: string,
 ): Project | undefined => {
   return projects.find(
-    (project) => project.id === id,
+    (project) =>
+      project.id === id &&
+      project.userId === userId,
   );
 };
 
 export const updateProject = (
+  userId: string,
   id: string,
   updates: Partial<
     Pick<
@@ -54,7 +64,9 @@ export const updateProject = (
   >,
 ): Project | undefined => {
   const project = projects.find(
-    (item) => item.id === id,
+    (item) =>
+      item.id === id &&
+      item.userId === userId,
   );
 
   if (!project) {
@@ -66,7 +78,8 @@ export const updateProject = (
   }
 
   if (updates.description !== undefined) {
-    project.description = updates.description.trim();
+    project.description =
+      updates.description.trim();
   }
 
   if (updates.status !== undefined) {
@@ -81,16 +94,20 @@ export const updateProject = (
     project.progress = updates.progress;
   }
 
-  project.updatedAt = new Date().toISOString();
+  project.updatedAt =
+    new Date().toISOString();
 
   return project;
 };
 
 export const deleteProject = (
+  userId: string,
   id: string,
 ): boolean => {
   const index = projects.findIndex(
-    (project) => project.id === id,
+    (project) =>
+      project.id === id &&
+      project.userId === userId,
   );
 
   if (index === -1) {
