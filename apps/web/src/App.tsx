@@ -1,4 +1,4 @@
-import LiquidGlass from "./LiquidGlass";
+
 import { useState } from "react";
 
 // @ts-expect-error CSS imports are handled by the bundler in this project
@@ -155,7 +155,7 @@ function App() {
 
   return (
     <div className="app-shell">
-      <LiquidGlass />
+      
       <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
         <div className="brand">
           <div className="brand-mark">A</div>
