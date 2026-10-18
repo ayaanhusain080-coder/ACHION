@@ -2,6 +2,7 @@ import { Router } from "express";
 import authRoutes from "./authRoutes.js";
 import calendarRoutes from "./calendarRoutes.js";
 import goalRoutes from "./goalRoutes.js";
+import knowledgeRoutes from "./knowledgeRoutes.js";
 import projectRoutes from "./projectRoutes.js";
 import taskRoutes from "./taskRoutes.js";
 import { requireAuth } from "../middleware/authMiddleware.js";
@@ -32,5 +33,11 @@ router.use(
 );
 
 router.use("/goals", requireAuth, goalRoutes);
+
+router.use(
+  "/knowledge",
+  requireAuth,
+  knowledgeRoutes,
+);
 
 export default router;
